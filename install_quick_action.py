@@ -34,7 +34,7 @@ def install_action(app_path):
                     "ActionBundlePath": "/System/Library/Automator/Run Shell Script.action",
                     "ActionName": "Run Shell Script",
                     "ActionParameters": {
-                        "COMMAND_STRING": f'open -na "{app_path}" --args "$@"',
+                        "COMMAND_STRING": f'open -na "{app_path}" "$@"',
                         "CheckedForUserDefaultShell": True,
                         "inputMethod": 1,
                         "shell": "/bin/bash",

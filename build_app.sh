@@ -26,7 +26,7 @@ cat > "$CONTENTS_DIR/Info.plist" <<EOF
     <key>CFBundleExecutable</key>
     <string>$APP_NAME</string>
     <key>CFBundleIdentifier</key>
-    <string>com.kuiper.$APP_NAME.v2</string>
+    <string>com.lennon78.FinderSizePreview</string>
     <key>CFBundleName</key>
     <string>$APP_NAME</string>
     <key>CFBundlePackageType</key>
@@ -51,6 +51,19 @@ cat > "$CONTENTS_DIR/Info.plist" <<EOF
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>findersizepreview</string>
+            </array>
+        </dict>
+    </array>
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>Any File or Folder</string>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>public.item</string>
             </array>
         </dict>
     </array>
