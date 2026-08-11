@@ -120,3 +120,5 @@ install_quick_action.py     # Installs the right-click Quick Action
 ## License
 
 [MIT](LICENSE)
+
+Third-party dependency notices: see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
