@@ -16,6 +16,10 @@ Finder shows you how many items are selected, but not how much disk space they a
 - **Global hotkey** — press `Control + Shift + Space` from anywhere to toggle the HUD.
 - **Live refresh** — the HUD stays open and updates automatically as you change your selection in Finder.
 - **Right-click Quick Action** — also available from Finder's context menu as *Preview File Size*.
+- **Per-item breakdown** — select a single folder to see its largest contents at a glance; select multiple items to see each one's size, sorted largest first.
+- **File/folder counts** — shows how many files and folders were scanned (and how many were unreadable).
+- **Copy to clipboard** — press `⌘C` (or click *Copy*) while the HUD is open to copy the summary and breakdown as text.
+- **Dismiss with Esc** — press `Esc` to close the HUD without touching the mouse.
 - **Menu-bar app** — no Dock icon, sits quietly in your status bar.
 - **Launch at Login** option (macOS 13+).
 - Human-friendly units: **Bytes / KiB / MiB / GiB**.
@@ -75,7 +79,8 @@ If the new action doesn't show up in the context menu right away, run:
 1. Select one or more files/folders in Finder.
 2. Press **`Control + Shift + Space`** — a HUD appears showing the item name(s) and total size.
 3. Change your selection to see the size update live.
-4. Press the hotkey again (or close the window) to dismiss the HUD.
+4. Press the hotkey again (or **`Esc`**) to dismiss the HUD.
+5. Press **`⌘C`** to copy the summary and breakdown to your clipboard.
 
 Alternatively, right-click any selection in Finder and choose **Quick Actions → Preview File Size**.
 
@@ -85,9 +90,9 @@ Alternatively, right-click any selection in Finder and choose **Quick Actions �
 
 - The **global hotkey** is registered with the [`HotKey`](https://github.com/soffes/HotKey) package.
 - The current Finder selection is retrieved via AppleScript (Automation permission).
-- Total size is computed with `FileManager`'s directory enumerator, preferring the real allocated on-disk size (`totalFileAllocatedSize`).
+- Total size is computed with `FileManager`'s directory enumerator, preferring the real allocated on-disk size (`totalFileAllocatedSize`). For a single folder selection, one pass computes both the total and the largest direct children.
 - An Accessibility observer (`FinderObserver`) listens for selection changes while the HUD is open, so the size refreshes live.
-- The HUD is a floating, non-activating `NSPanel` with a `SwiftUI` view — it never steals focus from Finder.
+- The HUD is a floating, non-activating `NSPanel` with a `SwiftUI` view — it never steals focus from Finder. `⌘C` and `Esc` are handled through a local key event monitor.
 
 ---
 

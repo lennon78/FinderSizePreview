@@ -7,12 +7,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var hotKey: HotKey?
     var hudWindow: NSWindow?
     var statusItem: NSStatusItem?
+    var keyMonitor: Any?
     let viewModel = HUDViewModel()
     let finderObserver = FinderObserver()
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusBar()
         setupHUDWindow()
+        setupKeyMonitor()
         
         // Initial quiet check. ONLY register hotkey if we already have permission!
         if checkAccessibilityPermissions(quiet: true) {
@@ -159,9 +161,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
+    /// Local monitor so ⌘C copies and Esc dismisses while the HUD is up.
+    /// (The HUD panel is nonactivating, so SwiftUI keyboard shortcuts alone
+    /// are not reliable here.)
+    func setupKeyMonitor() {
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self, let window = self.hudWindow, window.isVisible else { return event }
+
+            // ⌘C — copy the summary to the clipboard
+            if event.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(.command),
+               event.charactersIgnoringModifiers?.lowercased() == "c" {
+                self.viewModel.copyToClipboard()
+                return nil
+            }
+
+            // Esc — dismiss the HUD
+            if event.keyCode == 53 {
+                self.toggleHUD()
+                return nil
+            }
+
+            return event
+        }
+    }
+
     func setupHUDWindow() {
         let panel = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 340, height: 180),
+            contentRect: NSRect(x: 0, y: 0, width: 340, height: 220),
             styleMask: [.nonactivatingPanel, .fullSizeContentView, .titled, .closable, .miniaturizable, .resizable],
             backing: .buffered,
             defer: false
