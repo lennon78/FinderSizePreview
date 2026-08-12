@@ -15,6 +15,7 @@ class FinderObserver {
     private var observer: AXObserver?
     private var runLoopSource: CFRunLoopSource?
     private var finderElement: AXUIElement?
+    private var pendingRefresh: DispatchWorkItem?
 
     var onSelectionChanged: (() -> Void)?
 
@@ -47,6 +48,8 @@ class FinderObserver {
     }
 
     func stopObserving() {
+        pendingRefresh?.cancel()
+        pendingRefresh = nil
         if let obs = observer, let element = finderElement {
             AXObserverRemoveNotification(obs, element, kAXSelectedChildrenChangedNotification as CFString)
             AXObserverRemoveNotification(obs, element, kAXFocusedUIElementChangedNotification as CFString)
@@ -61,9 +64,14 @@ class FinderObserver {
     }
 
     fileprivate func handleNotification(_ notification: CFString) {
-        // Debounce or dispatch immediately
-        DispatchQueue.main.async {
-            self.onSelectionChanged?()
+        // The three AX notifications (selection, focus, main window) fire in
+        // bursts for a single user action. Coalesce them into one refresh so
+        // we don't recalculate sizes several times in a row.
+        pendingRefresh?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            self?.onSelectionChanged?()
         }
+        pendingRefresh = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: work)
     }
 }

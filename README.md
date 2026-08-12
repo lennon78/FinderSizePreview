@@ -22,7 +22,7 @@ Finder shows you how many items are selected, but not how much disk space they a
 - **Dismiss with Esc** — press `Esc` to close the HUD without touching the mouse.
 - **Menu-bar app** — no Dock icon, sits quietly in your status bar.
 - **Launch at Login** option (macOS 13+).
-- Human-friendly units: **Bytes / KiB / MiB / GiB**.
+- Human-friendly units: **Bytes / KiB / MiB / GiB / TiB**.
 
 ---
 
@@ -106,6 +106,14 @@ swift build -c release
 
 The build bundle script (`build_app.sh`) wraps this into a proper `.app` bundle with a generated `Info.plist`.
 
+### Running tests
+
+```bash
+swift test
+```
+
+The test suite covers size calculation (single folder roll-up, multi-select sorting, duplicate names, missing paths) and byte formatting.
+
 ### Project layout
 
 ```
@@ -116,6 +124,8 @@ Sources/
 ├── FinderIntegration.swift # Reads the current Finder selection
 ├── FinderObserver.swift    # Live selection-change observation
 └── SizeCalculator.swift    # Recursive on-disk size calculation
+Tests/
+└── FinderSizePreviewTests/ # SizeCalculator + ByteFormatter unit tests
 build_app.sh                # Builds FinderSizePreview.app
 install_quick_action.py     # Installs the right-click Quick Action
 ```

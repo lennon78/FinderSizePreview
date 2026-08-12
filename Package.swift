@@ -12,6 +12,11 @@ let package = Package(
             name: "FinderSizePreview",
             dependencies: ["HotKey"],
             path: "Sources"
+        ),
+        .testTarget(
+            name: "FinderSizePreviewTests",
+            dependencies: ["FinderSizePreview"],
+            path: "Tests/FinderSizePreviewTests"
         )
     ]
 )

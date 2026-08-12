@@ -98,6 +98,9 @@ class HUDViewModel: ObservableObject {
 
 enum ByteFormatter {
     static func string(from bytes: Int64) -> String {
+        let tib = Double(bytes) / 1099511627776.0
+        if tib >= 1.0 { return String(format: "%.2f TiB", tib) }
+
         let gib = Double(bytes) / 1073741824.0
         if gib >= 1.0 { return String(format: "%.2f GiB", gib) }
 
@@ -143,6 +146,10 @@ struct HUDView: View {
 
             if !viewModel.breakdown.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
+                    Text("Largest items")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                        .textCase(.uppercase)
                     ForEach(Array(viewModel.breakdown.enumerated()), id: \.offset) { _, item in
                         HStack {
                             Text(item.name)
